@@ -43,7 +43,7 @@ exports.listCmd = rl => {
  *
  *@param id Clave del quiz a mostrar.
  */
-const validateIde = id => {
+const validateId = id => {
 	//usamos las promesas de Sequelize
 	return new Sequelize.Promise ((resolve, reject) => {
 		if(typeof id === "undefined"){
@@ -60,7 +60,7 @@ const validateIde = id => {
 };
 
 exports.showCmd = (rl, id) => {
-	validateIde(id)
+	validateId(id)
 	.then(id = models.quiz.findById(id))
 	.then(quiz =>{
 		if(!quiz){
@@ -130,7 +130,7 @@ exports.addCmd = rl => {
 
 exports.deleteCmd = (rl, id) => {
 	//Promesa. Si se cumple me da el id que quiero
-	validateIde(id)
+	validateId(id)
 	//El elemento que quiero destruir es el que tiene como valor id
 	.then(d => models.quiz.destroy({where: {id}}))
 	.catch(error => {
@@ -143,7 +143,7 @@ exports.deleteCmd = (rl, id) => {
 };
 
 exports.editCmd = (rl, id) => {
-	validateIde(id) //promesa oara ver si me gista id  
+	validateId(id) //promesa oara ver si me gista id  
 	//pregunta que saco de la base de datos
 	.then(id => models.quiz.findById(id)) 
 	.then(quiz => {
