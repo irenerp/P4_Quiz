@@ -64,7 +64,7 @@ exports.showCmd = (rl, id) => {
 	.then(id = models.quiz.findById(id))
 	.then(quiz =>{
 		if(!quiz){
-			throw ner Error(`No existe un quiz asociado al id = ${id}.`);
+			throw new Error(`No existe un quiz asociado al id = ${id}.`);
 		}
 		log(`[${colorize(quiz.id, 'magenta')}]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
 	})
@@ -85,7 +85,7 @@ exports.showCmd = (rl, id) => {
 //Me creo una constante que hace una pregunta
  const makeQuestion = (rl, text) =>{
  	return new Sequelize.Promise ((resolve, reject) => { 
- 		rl.question(colorize(text. 'red'), answer => {
+ 		rl.question(colorize(text, 'red'), answer => {
  			resolve(answer.trim()); //resuelvo la promesa con el valor que quiero que me de. Trim para 	quitar espacios vacios. 
  		});
  	});
@@ -147,7 +147,7 @@ exports.editCmd = (rl, id) => {
 	//pregunta que saco de la base de datos
 	.then(id => models.quiz.findById(id)) 
 	.then(quiz => {
-		if (!quiz) => { //lanzo error si no hay el id que busco 
+		if (!quiz)  { //lanzo error si no hay el id que busco 
 			throw new Error (`No existe un quiz asociado al id= ${id}.`);
 		}
 
