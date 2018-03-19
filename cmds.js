@@ -190,27 +190,38 @@ exports.editCmd = (rl, id) => {
 };
 
 exports.testCmd = (rl, id) => {
-	if(typeof id === "undefined"){
-		errorlog(`Falta el parametro id`);
-		rl.prompt(); 
-	}else{
-		try{
-			const quiz = model.getByIndex(id);
-			rl.question(colorize(quiz.question + '? ', 'red'), answer =>{
-				if(quiz.answer.toLowerCase().trim() === answer.toLowerCase().trim()){
-					log('Su respuest es correcta.', 'yellow');
-					biglog('CORRECTO', 'green');
-				}else{
-					log('Su respuest es incorrecta.', 'yellow');
-					biglog('INCORRECTO', 'red');
-				}
-				rl.prompt(); 
-		});
-	}catch(error){
-			errorlog(error.message); 
-			rl.prompt();
+	validateId(id)
+	.then(id => models.quiz.findById(id))
+	.then(quiz => {
+		if (!quiz) {
+			throw new Error(`No existe un quiz asociado al id=${id}.`);
 		}
-	}
+		
+		makeQuestion(rl, quiz.question)
+		.then(preg => {
+			if(quiz.answer.toLowerCase().trim() === preg.toLowerCase().trim()){
+				log("Su respuesta es correcta.", 'green');
+				biglog('CORRECTO', 'green');
+			} else{
+					log("Su respuesta es incorrecta.", 'red');
+					biglog('INCORRECTO', 'red');
+			}
+		})
+		.then(() => {
+			rl.prompt();
+		});
+		
+	})
+	.catch(Sequelize.ValidationError, error => {
+		errorlog('El quiz es erróneo:');
+		error.errors.forEach(({message}) => errorlog(message));
+	})
+	.catch(error => {
+		errorlog(error.message);
+	})
+	.then(() =>  {
+		rl.prompt();
+	});
 
 };
 
