@@ -15,9 +15,12 @@ const chalk = require('chalk');
 
  /**
   *Escribe un mensage de log
+  *Querenmos que se escriba en el localhost conectado
   */
-  const log = (msg,color) => {
-  	console.log(colorize(msg,color));
+  const log = (socket, msg,color) => {
+  	//llamamos a socket para que me escriba lo que quiero
+  	//soccket mete un retardo de carro, y metemos la n para el retormo de carro
+  	socket.write(colorize(msg,color) + "\n");
   };
 
 
@@ -25,15 +28,15 @@ const chalk = require('chalk');
 *Escribe un mensage de log grande.
 */
 
-const biglog = (msg,color) => {
-	log(figlet.textSync(msg, {horizontalLayout: 'full'}), color);	
+const biglog = (socket, msg,color) => {
+	log(socket, figlet.textSync(msg, {horizontalLayout: 'full'}), color);	
 };
 
 /**
  *Escribe el mensage de error emsg.
  */
-const errorlog = (emsg) => {
-	console.log(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")}`);
+const errorlog = (socket, emsg) => {
+	socket.write(`${colorize("Error", "red")}: ${colorize(colorize(emsg, "red"), "bgYellowBright")} \n`);
 };
 
 exports = module.exports = {
