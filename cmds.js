@@ -43,7 +43,7 @@ exports.listCmd = (socket, rl) => {
  *
  *@param id Clave del quiz a mostrar.
  */
-const validateId = (socket, id) => {
+const validateId = id => {
 	//usamos las promesas de Sequelize
 	return new Sequelize.Promise ((resolve, reject) => {
 		if(typeof id === "undefined"){
@@ -83,7 +83,7 @@ exports.showCmd = (socket, rl, id) => {
 
 
 //Me creo una constante que hace una pregunta
- const makeQuestion = (socket, rl, text) =>{
+ const makeQuestion = ( rl, text) =>{
  	return new Sequelize.Promise ((resolve, reject) => { 
  		rl.question(colorize(text, 'red'), answer => {
  			resolve(answer.trim()); //resuelvo la promesa con el valor que quiero que me de. Trim para 	quitar espacios vacios. 
@@ -113,7 +113,7 @@ exports.addCmd = (socket, rl) => {
 	})
 	//Me pasa en error el error que ha ocurrido
 	.catch(Sequelize.ValidationError, error => {
-		errorlog('El quiz es erroneo: ');
+		errorlog(socket, 'El quiz es erroneo: ');
 		//Array con todos los errores que ocurren
 		error.errors.forEach(({message}) => errorlog(socket, message));
 	})
@@ -167,7 +167,7 @@ exports.editCmd = (socket, rl, id) => {
 	})
 	//recivo el quiz cambiado y lo guardo en la base de datos
 	.then(quiz => {
-		return qui.save();
+		return quiz.save();
 	})
 
 	.then(quiz => {
@@ -175,7 +175,7 @@ exports.editCmd = (socket, rl, id) => {
 	})
 	//solo me coge los errores de validacion
 	.catch(Sequelize.ValidationError, error => {
-		errorlog('El quiz es erroneo: '); 
+		errorlog(socket, 'El quiz es erroneo: '); 
 		//recorro el array mostrando los errores ocurridos
 		error.errors.forEach(({message}) => errorlog(socket, message));
 	})
@@ -213,7 +213,7 @@ exports.testCmd = (socket, rl, id) => {
 		
 	})
 	.catch(Sequelize.ValidationError, error => {
-		errorlog('El quiz es erróneo:');
+		errorlog(socket, 'El quiz es erróneo:');
 		error.errors.forEach(({message}) => errorlog(socket, message));
 	})
 	.catch(error => {
@@ -289,6 +289,6 @@ exports.creditsCmd = (socket, rl) => {
 
 exports.quitCmd = (socket, rl) => {
 	rl.close();
-	rl.prompt();
+	//rl.prompt();
 	socket.end();
 };
